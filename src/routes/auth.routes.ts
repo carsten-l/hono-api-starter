@@ -1,9 +1,9 @@
 
 import { Hono } from "hono";
-import prisma from "../src/config";
+import prisma from "../config";
 import { hashSync, compareSync } from "bcryptjs";
 import { sign } from "hono/jwt";
-import type { LoginUser } from "../src/types";
+import type { LoginUser } from "../types";
 
 const auth = new Hono();
 
