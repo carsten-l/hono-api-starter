@@ -1,5 +1,4 @@
 // src/controllers/messages.controller.ts
-import { z } from "zod";
 import { messagesService } from "../services/messages.service";
 import { Prisma } from "../config";
 import { messageSchema } from "../schemas";
