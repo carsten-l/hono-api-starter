@@ -1,7 +1,7 @@
 
 import { Hono } from "hono";
 import { z } from "zod"; // <-- needed to detect ZodError
-import type { NewPost } from "../types";
+import type { NewPost } from "../schemas";
 import { getPosts, getPostById, createPost, updatePost, deletePost } from "../controllers/posts.controller";
 
 const posts = new Hono();

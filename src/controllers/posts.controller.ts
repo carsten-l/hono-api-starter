@@ -1,15 +1,8 @@
 import prisma, { Prisma } from "../config";
-import { z } from "zod";
 import { postsService } from "../services/posts.service";
-import auth from "../routes/auth.routes";
-import type { NewPost } from "../types";
+import { postSchema } from "../schemas";
+import type { NewPost } from "../schemas";
 
-const postSchema = z.object({
-  title: z.string().min(2).max(100),
-  content: z.string().min(2).max(1000),
-  published: z.boolean().optional(),
-  authorId: z.number().min(1)
-});
 
 export async function getPosts() {
   const posts = await prisma.post.findMany();

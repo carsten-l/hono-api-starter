@@ -1,5 +1,5 @@
 import prisma, { Prisma } from "../config";
-import type { NewPost } from "../types";
+import type { NewPost } from "../schemas";
 
 export const postsService = {
   create: async (data: NewPost) => {
