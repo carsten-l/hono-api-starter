@@ -1,47 +1,43 @@
-
 import { Hono } from "hono";
-import prisma from "../config";
+import { z } from "zod";
 import { hashSync, compareSync } from "bcryptjs";
-import { sign } from "hono/jwt";
-import type { LoginUser } from "../types";
+import type { RegisterUser } from "../types";
+import { createUser, loginUser } from "../controllers/auth.controller";
 
 const auth = new Hono();
 
+const userSchema = z.object({
+    email: z.string().email(),
+    name: z.string().min(2),
+    password: z.string().min(8),
+});
+
 auth.post("/register", async (c) => {
-    const body = await c.req.json();
-    const user = await prisma.user.create({
-        data: {
-            name: body.name,
-            email: body.email,
-            password: hashSync(body.password, 15)
-        },
-    });
-    // Remove password from the response
-    let { password, ...userWithoutPassword } = user;
-    return c.json(userWithoutPassword, 201);
+    try {
+        const body: RegisterUser = await c.req.json();
+        const parsedBody = userSchema.parse(body); // Validate input
+        const result = await createUser(parsedBody);
+        // Remove password from the response
+        return c.json({user: result.user}, 201);
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return c.json({ success: false, errors: error.errors }, 400);
+        }
+        return c.json({ success: false, message: "An unexpected error occurred" }, 500);
+    }
 });
 
 auth.post("/login", async (c) => {
-    const body: LoginUser = await c.req.json();
-    const user = await prisma.user.findUnique({
-        where: { email: body.email },
-    });
-
-    
-    if (user && compareSync(body.password, user.password)) {
-        let accessToken = await sign({
-            id: user.id, 
-            exp: Math.floor(Date.now() / 1000) + 60 * 60,
-        }, process.env.JWT_SECRET as string
-    );
-        return c.json({ 
-            id: user.id, 
-            name: user.name,
-            accessToken, 
-            validUntil: Date.now() + (60*60*1000) 
-        }, 200);
-    } else {
-        return c.json({ message: "Invalid credentials" }, 401);
+    try {
+        const body: RegisterUser = await c.req.json();
+        const parsedBody = userSchema.parse(body); // Validate input
+        const result = await loginUser(parsedBody);
+        return c.json({ user: result.user }, 200);
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return c.json({ success: false, errors: error.errors }, 400);
+        }
+        return c.json({ success: false, message: "An unexpected error occurred" }, 500);
     }
 });
 

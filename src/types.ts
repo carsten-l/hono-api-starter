@@ -12,7 +12,7 @@ export type User = {
     id: number;
     email: string;
     password: string;
-    name?: string;
+    name: string;
 };
 
-export type LoginUser = Omit<User, 'id'>;
+export type RegisterUser = Omit<User, 'id'>;
