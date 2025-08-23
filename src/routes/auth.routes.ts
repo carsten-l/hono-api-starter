@@ -1,18 +1,16 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import type { NewUser, LoginUser } from "../schemas";
-import { createUser, loginUser } from "../controllers/auth.controller";
+import { createUserController, loginUserController } from "../controllers/auth.controller";
 import { userSchema } from "../schemas";
 
 const auth = new Hono();
 
 auth.post("/register", async (c) => {
     try {
-        const body: NewUser = await c.req.json();
-        const parsedBody = userSchema.parse(body); // Validate input
-        const result = await createUser(parsedBody);
-        // Remove password from the response
-        return c.json({user: result.user}, 201);
+        const body = await c.req.json();
+        const user = await createUserController(body);
+        return c.json({ user }, 201);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return c.json({ success: false, errors: error.errors }, 400);
@@ -23,10 +21,9 @@ auth.post("/register", async (c) => {
 
 auth.post("/login", async (c) => {
     try {
-        const body: LoginUser = await c.req.json();
-        const parsedBody = userSchema.parse(body); // Validate input
-        const result = await loginUser(parsedBody);
-        return c.json({ user: result.user }, 200);
+        const body = await c.req.json();
+        const user = loginUserController(body)
+        return c.json({ user }, 200);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return c.json({ success: false, errors: error.errors }, 400);
