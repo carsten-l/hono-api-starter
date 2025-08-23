@@ -1,8 +1,6 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import type { NewUser, LoginUser } from "../schemas";
 import { createUserController, loginUserController } from "../controllers/auth.controller";
-import { userSchema } from "../schemas";
 
 const auth = new Hono();
 
