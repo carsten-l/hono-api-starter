@@ -2,20 +2,16 @@
 import { z } from "zod";
 import { messagesService } from "../services/messages.service";
 import { Prisma } from "../config";
+import { messageSchema } from "../schemas";
 
-const MessageSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email format"),
-  subject: z.string().min(1, "Subject is required"),
-  message: z.string().min(1, "Message is required"),
-});
 
-export async function createMessage(body: Prisma.MessageCreateInput) {
-  const parsedBody = MessageSchema.parse(body);
+
+export async function createMessageController(body: Prisma.MessageCreateInput) {
+  const parsedBody = messageSchema.parse(body);
   const message = await messagesService.create(parsedBody);
   return { message };
 }
 
-export async function getMessages() {
+export async function getMessagesController() {
   return await messagesService.getAll();
 }
