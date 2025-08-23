@@ -1,16 +1,10 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import { hashSync, compareSync } from "bcryptjs";
 import type { NewUser, LoginUser } from "../schemas";
 import { createUser, loginUser } from "../controllers/auth.controller";
+import { userSchema } from "../schemas";
 
 const auth = new Hono();
-
-const userSchema = z.object({
-    email: z.string().email(),
-    name: z.string().min(2),
-    password: z.string().min(8),
-});
 
 auth.post("/register", async (c) => {
     try {
