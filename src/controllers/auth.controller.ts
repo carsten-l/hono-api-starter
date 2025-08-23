@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { Prisma } from "../config";
 import { authService } from "../services/auth.service";
 import { userSchema  } from "../schemas";
