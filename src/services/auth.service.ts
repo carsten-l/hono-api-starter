@@ -1,10 +1,10 @@
-import type { RegisterUser } from "../types";
+import type { NewUser, LoginUser } from "../schemas";
 import prisma, { Prisma } from "../config";
 import { hashSync, compareSync } from "bcryptjs";
 import { sign } from "hono/jwt";
 
 export const authService = {
-    register: async (userData: RegisterUser) => {
+    register: async (userData: NewUser) => {
         const prismaData: Prisma.UserCreateInput = {
             name: userData.name,
             email: userData.email,
@@ -15,12 +15,12 @@ export const authService = {
         return userWithoutPassword;
     },
 
-    login: async (email: string, password: string) => {
+    login: async (body: LoginUser) => {
         const user = await prisma.user.findUnique({
-            where: { email },
+            where: { email: body.email },
         });
 
-        if (user && compareSync(password, user.password)) {
+        if (user && compareSync(body.password, user.password)) {
             let accessToken = await sign({
                 id: user.id,
                 exp: Math.floor(Date.now() / 1000) + 60 * 60,

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { hashSync, compareSync } from "bcryptjs";
-import type { RegisterUser } from "../types";
+import type { NewUser, LoginUser } from "../schemas";
 import { createUser, loginUser } from "../controllers/auth.controller";
 
 const auth = new Hono();
@@ -14,7 +14,7 @@ const userSchema = z.object({
 
 auth.post("/register", async (c) => {
     try {
-        const body: RegisterUser = await c.req.json();
+        const body: NewUser = await c.req.json();
         const parsedBody = userSchema.parse(body); // Validate input
         const result = await createUser(parsedBody);
         // Remove password from the response
@@ -29,7 +29,7 @@ auth.post("/register", async (c) => {
 
 auth.post("/login", async (c) => {
     try {
-        const body: RegisterUser = await c.req.json();
+        const body: LoginUser = await c.req.json();
         const parsedBody = userSchema.parse(body); // Validate input
         const result = await loginUser(parsedBody);
         return c.json({ user: result.user }, 200);

@@ -7,12 +7,3 @@ export type Post = {
 }
 
 export type NewPost = Omit<Post, 'id'>;
-
-export type User = {
-    id: number;
-    email: string;
-    password: string;
-    name: string;
-};
-
-export type RegisterUser = Omit<User, 'id'>;
