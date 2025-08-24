@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { jwt } from 'hono/jwt'
-import { getUserById, updateUser } from "../controllers/users.controller";
+import { getUserById, updateUser } from "./services";
 
 const users = new Hono();
 

@@ -1,8 +1,7 @@
-import prisma, { Prisma } from "../config";
-import type { NewPost } from "../schemas";
+import prisma, { Prisma } from "../../core/db";
+import type { NewPost } from "./validation";
 
-export const postsService = {
-  create: async (data: NewPost) => {
+export async function createPost (data: NewPost) {
     const prismaData: Prisma.PostCreateInput = {
       title: data.title,
       content: data.content,
@@ -14,14 +13,17 @@ export const postsService = {
       }
     };
     return prisma.post.create({ data: prismaData });
-  },
-  getAll: async () => {
+  }
+
+  export async function getAllPosts() {
     return prisma.post.findMany();
-  },
-  getById: async (id: number) => {
+  }
+
+  export async function getPostById(id: number) {
     return prisma.post.findUnique({ where: { id } });
-  },
-  update: async (id: number, data: NewPost) => {
+  }
+
+  export async function updatePost(id: number, data: NewPost) {
     const prismaData: Prisma.PostUpdateInput = {
       title: data.title,
       content: data.content,
@@ -33,8 +35,8 @@ export const postsService = {
       }
     };
     return prisma.post.update({ where: { id }, data: prismaData });
-  },
-  delete: async (id: number) => {
+  }
+
+  export async function deletePost(id: number) {
     return prisma.post.delete({ where: { id } });
-  },
-};
+  }

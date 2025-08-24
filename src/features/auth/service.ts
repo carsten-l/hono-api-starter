@@ -1,10 +1,10 @@
-import type { NewUser, LoginUser } from "../schemas";
-import prisma, { Prisma } from "../config";
+import type { NewUser, LoginUser } from "../users/validation";
+import prisma, { Prisma } from "../../core/db";
 import { hashSync, compareSync } from "bcryptjs";
 import { sign } from "hono/jwt";
 
-export const authService = {
-    register: async (userData: NewUser) => {
+
+    export async function createUser (userData: NewUser) {
         const prismaData: Prisma.UserCreateInput = {
             name: userData.name,
             email: userData.email,
@@ -13,9 +13,9 @@ export const authService = {
         const user = await prisma.user.create({ data:prismaData });
         const { password, ...userWithoutPassword } = user;
         return userWithoutPassword;
-    },
+    }
 
-    login: async (body: LoginUser) => {
+    export async function loginUser (body: LoginUser) {
         const user = await prisma.user.findUnique({
             where: { email: body.email },
         });
@@ -36,4 +36,4 @@ export const authService = {
             throw new Error("Invalid credentials");
         }
     }
-};
+

@@ -1,4 +1,4 @@
-import prisma from "../config";
+import prisma from "../../core/db";
 import { hashSync } from "bcryptjs";
 
 export async function getUserById(id: number) {
