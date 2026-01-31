@@ -4,7 +4,7 @@
   "description": "Starter template for REST api using Hono.dev and SQLite",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx index.ts",
+    "dev": "tsx src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
