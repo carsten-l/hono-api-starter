@@ -7,4 +7,4 @@ export const postSchema = z.object({
   authorId: z.number().min(1)
 });
 export type Post = z.infer<typeof postSchema>;
-export type NewPost = Omit<Post, 'id'>;
+export type NewPost = Omit<Post, 'id' | "authorId"> ;
