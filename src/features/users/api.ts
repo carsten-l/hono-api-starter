@@ -6,6 +6,7 @@ const users = new Hono();
 
 users.use("/*", jwt({
     secret: process.env.JWT_SECRET as string,
+    alg: 'HS256' // Specify the expected algorithm(s) for better security
 }));
 
 users.get("/me", async (c) => {
