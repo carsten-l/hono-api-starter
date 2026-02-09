@@ -1,5 +1,6 @@
 import prisma, { Prisma } from "../../core/db";
 import type { NewPost } from "./validation";
+import { HTTPException } from 'hono/http-exception'
 
 
 export async function getAllPosts() {
@@ -7,7 +8,11 @@ export async function getAllPosts() {
 }
 
 export async function getPostById(id: number) {
-  return prisma.post.findUnique({ where: { id } });
+  const post = await prisma.post.findUnique({ where: { id } });
+  if (!post) {
+    throw new HTTPException(404, { message: "Post not found"});
+  }
+  return post;
 }
 
 export async function createPost (data: NewPost, authorId: number) {
@@ -20,12 +25,12 @@ export async function createPost (data: NewPost, authorId: number) {
 }
 
 export async function updatePost(id: number, data: NewPost, authorId: number) {
-  const existingPost = await getPostById(id);
+  const existingPost = await prisma.post.findUnique({ where: { id } });
   if (!existingPost) {
-    throw new Error("Post not found");
+    throw new HTTPException(404, { message: "Post not found" });
   }
   if (existingPost.authorId !== authorId) {
-    throw new Error("Unauthorized");
+    throw new HTTPException(403, { message: "You do not have permission to update this post" });
   }
   return prisma.post.update({ 
     where: { id }, 
@@ -37,12 +42,12 @@ export async function updatePost(id: number, data: NewPost, authorId: number) {
 }
 
 export async function deletePost(id: number, authorId: number) {
-  const existingPost = await getPostById(id);
+  const existingPost = await prisma.post.findUnique({ where: { id } });
   if (!existingPost) {
-    throw new Error("Post not found");
+    throw new HTTPException(404, { message: "Post not found"});
   }
   if (existingPost.authorId !== authorId) {
-    throw new Error("Unauthorized");
+    throw new HTTPException(403, { message: "You do not have permission to delete this post"});
   }
   return prisma.post.delete({ where: { id } });
 }
