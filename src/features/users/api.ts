@@ -6,13 +6,11 @@ const users = new Hono();
 
 users.use("/*", jwt({
     secret: process.env.JWT_SECRET as string,
+    alg: 'HS256' // Specify the expected algorithm(s) for better security
 }));
 
 users.get("/me", async (c) => {
     const payload = c.get("jwtPayload");
-    if (!payload) {
-        return c.json({ message: "Unauthorized" }, 401);
-    }
     const user = await getUserById(payload.id);
     if (user) {
         return c.json(user);
@@ -23,13 +21,9 @@ users.get("/me", async (c) => {
 
 users.patch("/me", async (c) => {
     const payload = c.get("jwtPayload");
-    if (!payload) {
-        return c.json({ message: "Unauthorized" }, 401);
-    }
     const body = await c.req.json();
     const user = await updateUser(payload.id, body);
     return c.json(user);
 });
-
 
 export default users;

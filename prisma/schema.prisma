@@ -8,9 +8,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
-
 
 model User {
   id        Int      @id @default(autoincrement())
@@ -20,7 +18,7 @@ model User {
   role      String   @default("USER")
   posts     Post[]
   createdAt DateTime @default(now())
-} 
+}
 
 model Post {
   id        Int      @id @default(autoincrement())
@@ -46,4 +44,3 @@ model Message {
   message   String
   createdAt DateTime @default(now())
 }
-

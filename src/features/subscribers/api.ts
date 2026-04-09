@@ -6,33 +6,35 @@ import {
   getAllSubscribers,
   deleteSubscriber
 } from "./services";
+import { success } from "zod";
 
 const subscribers = new Hono();
 
-subscribers.get("/", async (c) => {
-    const list = await getAllSubscribers();
-    return c.json(list);
-
-});
-
-subscribers.post("/", 
-  zValidator('json', subscriberSchema, (result, c) => {
+const validatesubscriber = zValidator('json', subscriberSchema, (result, c) => {
     if (!result.success) {
       return c.json({ error: result.error }, 400);
     }
-  }), 
-  async (c) => {
-    const body = c.req.valid("json");
-    const subscriber = await createSubscriber(body.email);
-    return c.json({ subscriber }, 201);
-  }
-);
+  });
+
+subscribers.get("/", async (c) => {
+    const list = await getAllSubscribers();
+    return c.json({ 
+      data: list,
+      meta: { count: list.length }
+    }); 
+});
+
+subscribers.post("/", validatesubscriber, async (c) => {
+  const body = c.req.valid("json");
+  const subscriber = await createSubscriber(body.email);
+  return c.json({ data: subscriber }, 201);
+});
 
 
 subscribers.delete("/", async (c) => {
-    const body = await c.req.json();
-    await deleteSubscriber(body.email);
-    return c.json({ message: "Subscriber deleted" }, 200);
-  });
+  const body = await c.req.json();
+  await deleteSubscriber(body.email);
+  return c.status(204);
+});
 
 export default subscribers;

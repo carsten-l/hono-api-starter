@@ -1,8 +1,9 @@
 // src/services/messages.service.ts
 import prisma, { Prisma } from "../../core/db";
+import type { NewMessage } from "../messages/validation"; 
 
 
-  export async function createMessage (data: Prisma.MessageCreateInput) {
+  export async function createMessage (data: NewMessage) {
     return await prisma.message.create({ data });
   }
 
