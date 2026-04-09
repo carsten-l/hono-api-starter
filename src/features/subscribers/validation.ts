@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
 export const subscriberSchema = z.object({
-  email: z.string().email(),
+  email: z.email( { 
+    error: (iss) => iss.input === undefined ? "Email is required." : "please provide a valid email address."
+  }),
 });
