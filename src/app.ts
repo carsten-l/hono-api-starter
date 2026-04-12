@@ -1,16 +1,19 @@
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { Hono } from "hono";
+import { serveStatic } from "@hono/node-server/serve-static";
 import { HTTPException } from 'hono/http-exception'
 import posts from "./features/posts/api";
 import message from './features/messages/api';
 import auth from "./features/auth/api";
 import users from "./features/users/api";
 import subscribers from './features/subscribers/api';
+import images from "./features/images/api";
 
 const app = new Hono();
 app.use("*", cors());
 app.use("*", logger());
+app.use("/file-bucket/*", serveStatic({ root: "./public" }));
 
 app.onError((error, c) => {
   if (error instanceof HTTPException) {
@@ -34,6 +37,7 @@ app.route("users", users);
 app.route("posts", posts);
 app.route("subscribers", subscribers);
 app.route("contact-us", message);
+app.route("images", images);
 
 
 
