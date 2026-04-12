@@ -44,3 +44,12 @@ model Message {
   message   String
   createdAt DateTime @default(now())
 }
+
+model Image {
+  id        String   @id @default(uuid())
+  path      String
+  altText   String
+  width     Int
+  height    Int
+  createdAt DateTime @default(now())
+}
