@@ -7,3 +7,6 @@ In the process of creating this i have explored different ways of organising the
 I have looked at other code, and consulted the hono docs for inspiration on code organization.
 
 The api has a set of endpoints that can be used as a template for a REST API.
+
+## AI automation
+The project contains a copilot instructions file that serves as guidelines for automated generation of schemas and endpoints.
